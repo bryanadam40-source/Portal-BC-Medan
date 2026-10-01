@@ -1,0 +1,2063 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal KPPBC TMP B Medan — Integrated Portal & Helpdesk Ticket</title>
+<style>
+:root {
+  --blue: #0f6cbd;
+  --dark: #174a7e;
+  --bg: #f5f7fa;
+  --card: #ffffff;
+  --text: #243447;
+  --muted: #667085;
+  --line: #e4e7ec;
+  --danger: #ef4444;
+  --success: #10b981;
+  --warning: #f59e0b;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); }
+
+/* TOP HEADER */
+.top {
+  height: 60px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  gap: 18px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+.logo {
+  padding: 0 10px;
+  height: 38px;
+  border-radius: 7px;
+  background: var(--blue);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+.brand { font-weight: 650; font-size: 16px; letter-spacing: 0.3px; display: flex; align-items: center; gap: 8px; }
+.search { margin-left: auto; width: 260px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 6px; font-size: 13px; outline: none; transition: border 0.2s; }
+.search:focus { border-color: var(--blue); }
+
+.admin-mode-toggle {
+  background: #f1f5f9;
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+  color: var(--text);
+}
+.admin-mode-toggle.active {
+  background: #dbeafe;
+  color: var(--blue);
+  border-color: var(--blue);
+}
+.user { width: 34px; height: 34px; border-radius: 50%; background: #e8f1fb; display: grid; place-items: center; color: var(--dark); font-weight: 700; font-size: 13px; }
+
+/* NAVBAR */
+nav { background: #fff; border-bottom: 1px solid var(--line); padding: 0 28px; display: flex; gap: 4px; overflow-x: auto; }
+nav button { border: 0; background: none; padding: 14px 16px; color: #475467; cursor: pointer; font-size: 14px; font-weight: 500; white-space: nowrap; transition: all 0.2s; }
+nav button.active, nav button:hover { color: var(--blue); background: #f1f7fd; border-bottom: 2px solid var(--blue); }
+
+/* MAIN CONTENT LAYOUT */
+main { max-width: 1380px; margin: auto; padding: 24px; }
+.hero {
+  background: linear-gradient(115deg, #0f6cbd, #245b9a);
+  color: #fff;
+  border-radius: 12px;
+  padding: 34px 38px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 4px 14px rgba(15,108,189,0.15);
+}
+.hero h1 { margin: 0 0 8px; font-size: 26px; font-weight: 700; }
+.hero p { margin: 0; opacity: 0.9; font-size: 14px; max-width: 800px; line-height: 1.5; }
+.hero .mark { font-size: 64px; opacity: 0.2; user-select: none; }
+
+.section-header { display: flex; justify-content: space-between; align-items: center; margin: 28px 0 14px; }
+.section-title { margin: 0; font-size: 20px; font-weight: 650; }
+
+.grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 20px; box-shadow: 0 1px 2px #00000008; position: relative; }
+.kpi b { font-size: 28px; display: block; margin-top: 8px; color: var(--text); }
+.kpi span { color: var(--muted); font-size: 13px; }
+
+.quick { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+.quick .card { text-align: center; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+.quick .card:hover { transform: translateY(-2px); box-shadow: 0 5px 18px rgba(0,0,0,0.06); }
+.quick p { margin: 8px 0 0; font-size: 13px; font-weight: 600; color: var(--text); }
+.icon { font-size: 24px; }
+
+.two { display: grid; grid-template-columns: 1.5fr 1fr; gap: 15px; }
+
+.news-item { padding: 13px 0; border-bottom: 1px solid var(--line); position: relative; }
+.news-item:last-child { border: 0; }
+.news-item h3 { margin: 0 0 4px; font-size: 15px; color: var(--text); }
+.news-item p { margin: 4px 0; font-size: 13px; color: var(--muted); line-height: 1.4; }
+.date { font-size: 12px; color: var(--muted); }
+
+/* FAQ ACCORDION */
+.faq { cursor: pointer; transition: background 0.2s; margin-bottom: 12px; }
+.faq-header { display: flex; justify-content: space-between; align-items: center; }
+.faq-header h3 { margin: 0; font-size: 15px; font-weight: 600; }
+.faq .answer { display: none; margin-top: 10px; font-size: 13px; color: var(--muted); line-height: 1.5; border-top: 1px dashed var(--line); padding-top: 10px; }
+.faq.open .answer { display: block; }
+.faq.open .faq-chevron { transform: rotate(180deg); }
+.faq-chevron { transition: transform 0.2s; font-size: 12px; color: var(--muted); }
+
+/* TABLES & BADGES */
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--line); font-size: 13px; }
+th { background: #f8fafc; color: var(--muted); font-weight: 600; }
+.badge { padding: 4px 10px; border-radius: 20px; background: #eaf3fb; color: var(--blue); font-size: 11px; font-weight: 600; display: inline-block; }
+.badge-green { background: #d1fae5; color: #065f46; }
+.badge-yellow { background: #fef3c7; color: #92400e; }
+.badge-red { background: #fee2e2; color: #991b1b; }
+.badge-gray { background: #f1f5f9; color: #475569; }
+.badge-purple { background: #f3e8ff; color: #6b21a8; }
+.badge-blue { background: #e0f2fe; color: #0369a1; }
+
+/* FILE UPLOAD DRAG & DROP AREA */
+.file-upload-box {
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+.file-upload-box:hover {
+  border-color: var(--blue);
+  background: #f0f7ff;
+}
+.file-upload-box input[type="file"] { display: none; }
+
+/* TOAST NOTIFICATION */
+#toastContainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.toast {
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: slideIn 0.3s ease;
+}
+.toast-success { background: #10b981; }
+.toast-error { background: #ef4444; }
+.toast-info { background: #0f6cbd; }
+
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* BUTTONS & EDIT TOOLBAR */
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.btn-primary { background: var(--blue); color: #fff; border-color: var(--blue); }
+.btn-primary:hover { background: var(--dark); }
+.btn-sm { padding: 4px 10px; font-size: 11px; border-radius: 4px; }
+.btn-danger { background: var(--danger); color: white; border-color: var(--danger); }
+.btn-edit { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+
+/* ADMIN CONTROL VISIBILITY SWITCH */
+.admin-controls { display: none !important; }
+.body-admin-active .admin-controls { display: inline-flex !important; }
+.body-admin-active div.admin-controls { display: flex !important; }
+.body-admin-active th.admin-controls,
+.body-admin-active td.admin-controls { display: table-cell !important; }
+
+/* MODAL WINDOWS */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: #fff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 560px;
+  padding: 24px;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.modal-header h3 { margin: 0; font-size: 18px; }
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--muted); }
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+}
+.form-group textarea { resize: vertical; min-height: 80px; }
+
+footer { text-align: center; color: var(--muted); padding: 30px; font-size: 12px; border-top: 1px solid var(--line); margin-top: 40px; }
+
+@media(max-width:900px){ .grid, .quick { grid-template-columns: repeat(2,1fr); } .two { grid-template-columns: 1fr; } .search { width: 180px; } }
+@media(max-width:600px){ .top { padding: 0 14px; } .brand { font-size: 14px; } .search { display: none; } nav { overflow-x: auto; padding: 0 8px; } main { padding: 14px; } .hero { padding: 25px; } .hero .mark { display: none; } }
+</style>
+</head>
+<body>
+
+<!-- TOP HEADER BAR -->
+<header class="top">
+  <div class="logo">BC MEDAN</div>
+  <div class="brand">Portal & Helpdesk Digital</div>
+  <input class="search" placeholder="🔍 Cari layanan, SOP, tiket..." onchange="globalSearch(this.value)">
+  <button class="admin-mode-toggle" id="adminToggleBtn" onclick="promptAdminLogin()">🔒 Mode Pengelola</button>
+  <div class="user" title="User Login">U</div>
+</header>
+
+<!-- NAVIGATION BAR -->
+<nav>
+  <button class="active" onclick="showPage('home')">🏠 Beranda</button>
+  <button onclick="showPage('tickets')">🎫 Helpdesk Tiket</button>
+  <button onclick="showPage('documents')">📁 Dokumen & SOP</button>
+  <button onclick="showPage('news')">📢 Berita & Pengumuman</button>
+  <button onclick="showPage('kpi')">📊 Capaian KPI</button>
+  <button onclick="showPage('faq')">❓ FAQ & Bantuan</button>
+</nav>
+
+<main>
+  <!-- ==================== PAGE 1: BERANDA (HOME) ==================== -->
+  <section id="home" class="page active">
+    <div class="hero">
+      <div>
+        <h1 id="heroTitle">Selamat Datang di Portal KPPBC TMP B Medan</h1>
+        <p>Pusat integrasi layanan internal kantor, penyampaian pengaduan IT, unduh SOP resmi, dan pantauan kinerja organisasi secara real-time.</p>
+      </div>
+      <div class="mark">🏛️</div>
+    </div>
+
+    <!-- KPI Summary Grid -->
+    <div class="section-header">
+      <h2 class="section-title">📊 Ikhtisar Kinerja & Layanan</h2>
+      <button class="btn btn-sm btn-edit admin-controls" onclick="openResetModal()">🔄 Reset Data Awal</button>
+    </div>
+    <div class="grid" id="kpiContainer"></div>
+
+    <!-- Quick Links Grid -->
+    <div class="section-header">
+      <h2 class="section-title">⚡ Pintasan Akses Cepat</h2>
+      <button class="btn btn-sm btn-primary admin-controls" onclick="openQuickModal()">➕ Tambah Link</button>
+    </div>
+    <div class="quick" id="quickAccessHomeContainer"></div>
+
+    <!-- Two Column Layout: Status Layanan & Berita Terkini -->
+    <div class="two" style="margin-top: 28px;">
+      <div class="card">
+        <h2 class="section-title" style="margin-bottom: 12px;">🖥️ Status Infrastruktur & Sistem</h2>
+        <div id="statusContainer"></div>
+      </div>
+      <div class="card">
+        <h2 class="section-title" style="margin-bottom: 12px;">📢 Pengumuman Terbaru</h2>
+        <div id="latestNewsContainer"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PAGE 2: HELPDESK TIKET ==================== -->
+  <section id="tickets" class="page">
+    <div class="section-header">
+      <div>
+        <h1 style="margin:0;">🎫 System Helpdesk & Tiket Pengaduan</h1>
+        <p style="color:var(--muted); margin:4px 0 0; font-size:13px;">Sampaikan kendala IT, jaringan, atau permohonan layanan administrasi kantor.</p>
+      </div>
+      <button class="btn btn-primary" onclick="openNewTicketModal()">➕ Buat Tiket Baru</button>
+    </div>
+
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; gap:10px;">
+        <input class="search" style="margin:0; flex:1;" id="ticketSearchInput" placeholder="🔍 Cari nomor tiket, nama pemohon, atau permasalahan..." onkeyup="searchTicket()">
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>No. Tiket</th>
+            <th>Pemohon & Unit</th>
+            <th>Judul Masalah</th>
+            <th>Kategori</th>
+            <th>Tanggal</th>
+            <th>Status</th>
+            <th class="admin-controls">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="ticketTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================== PAGE 3: DOKUMEN & SOP ==================== -->
+  <section id="documents" class="page">
+    <div class="section-header">
+      <div>
+        <h1 style="margin:0;">📁 Pusat Dokumen & SOP</h1>
+        <p style="color:var(--muted); margin:4px 0 0; font-size:13px;">Repositori file resmi, upload dokumen, panduan, dan regulasi internal kantor.</p>
+      </div>
+      <button class="btn btn-primary admin-controls" onclick="openDocModal()">➕ Tambah Dokumen / Upload File</button>
+    </div>
+
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
+        <input class="search" style="margin:0; flex:1; min-width:220px;" placeholder="🔍 Cari nama dokumen, ekstensi (PDF, DOCX), atau kategori..." oninput="filterDocTable(this.value)">
+        
+        <div id="docBatchBar" class="admin-controls" style="align-items:center; gap:8px; background:#f1f5f9; padding:6px 12px; border-radius:8px; border:1px solid var(--line);">
+          <span style="font-size:13px; font-weight:600; color:var(--dark);"><span id="selectedDocCount">0</span> Dipilih</span>
+          <button class="btn btn-sm btn-edit" onclick="batchEditDocStatus()">✏️ Ubah Status</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteSelectedDocs()">🗑️ Hapus Terpilih</button>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px; text-align:center;" class="admin-controls">
+              <input type="checkbox" id="selectAllDocs" onchange="toggleSelectAllDocs(this)" title="Pilih Semua">
+            </th>
+            <th>Nama Dokumen</th>
+            <th>Kategori</th>
+            <th>Tipe & Ukuran</th>
+            <th>Tahun</th>
+            <th>Status</th>
+            <th>Aksi & Unduh</th>
+          </tr>
+        </thead>
+        <tbody id="docTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================== PAGE 4: BERITA & PENGUMUMAN ==================== -->
+  <section id="news" class="page">
+    <div class="section-header">
+      <div>
+        <h1 style="margin:0;">📢 Berita & Pengumuman Internal</h1>
+        <p style="color:var(--muted); margin:4px 0 0; font-size:13px;">Informasi kegiatan, edaran pimpinan, dan pemutakhiran data pegawai.</p>
+      </div>
+      <button class="btn btn-primary admin-controls" onclick="openNewsModal()">➕ Tambah Berita</button>
+    </div>
+    <div class="card">
+      <div id="fullNewsContainer"></div>
+    </div>
+  </section>
+
+  <!-- ==================== PAGE 5: CAPAIAN KPI & UNIT KERJA ==================== -->
+  <section id="kpi" class="page">
+    <div class="section-header">
+      <div>
+        <h1 style="margin:0;">📊 Dashboard Kinerja & Unit Kerja</h1>
+        <p style="color:var(--muted); margin:4px 0 0; font-size:13px;">Capaian realisasi target volume pekerjaan per unit seksi.</p>
+      </div>
+      <button class="btn btn-primary admin-controls" onclick="openUnitModal()">➕ Tambah Unit Kerja</button>
+    </div>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Nama Unit Kerja</th>
+            <th>Target</th>
+            <th>Realisasi</th>
+            <th>Capaian (%)</th>
+            <th class="admin-controls">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="unitTableBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ==================== PAGE 6: FAQ & BANTUAN ==================== -->
+  <section id="faq" class="page">
+    <div class="section-header">
+      <div>
+        <h1 style="margin:0;">❓ Pertanyaan Sering Diajukan (FAQ)</h1>
+        <p style="color:var(--muted); margin:4px 0 0; font-size:13px;">Panduan cepat penyelesaian masalah mandiri untuk pegawai.</p>
+      </div>
+      <button class="btn btn-primary admin-controls" onclick="openFAQModal()">➕ Tambah FAQ</button>
+    </div>
+    <div id="faqContainer"></div>
+  </section>
+</main>
+
+<footer>
+  © 2026 KPPBC TMP B Medan — Sistem Informasi & Support Internal Portal Office
+</footer>
+
+<!-- CONTAINER FOR TOAST NOTIFICATIONS -->
+<div id="toastContainer"></div>
+
+<!-- CUSTOM CONFIRMATION MODAL -->
+<div class="modal-overlay" id="customConfirmModal">
+  <div class="modal" style="max-width: 400px; text-align: center;">
+    <h3 id="confirmModalTitle" style="margin-top:0;">Konfirmasi Aksi</h3>
+    <p id="confirmModalMessage" style="color: var(--muted); font-size: 14px; margin-bottom: 20px;"></p>
+    <div style="display: flex; justify-content: center; gap: 10px;">
+      <button class="btn" id="confirmModalCancelBtn">Batal</button>
+      <button class="btn btn-danger" id="confirmModalOkBtn">Ya, Lanjutkan</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TIKET BARU -->
+<div class="modal-overlay" id="ticketModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Buat Tiket Pengaduan Baru</h3>
+      <button class="btn btn-sm" onclick="closeModal('ticketModal')">✕</button>
+    </div>
+    <form onsubmit="saveNewTicket(event)">
+      <div class="form-group">
+        <label>Nama Pemohon</label>
+        <input type="text" id="ticketUser" required placeholder="Nama lengkap Anda">
+      </div>
+      <div class="form-group">
+        <label>Unit Kerja / Seksi</label>
+        <input type="text" id="ticketUnit" required placeholder="Contoh: Seksi Pabean / Subbag Umum">
+      </div>
+      <div style="display: flex; gap: 12px;">
+        <div class="form-group" style="flex: 1;">
+          <label>Kategori Kendala</label>
+          <select id="ticketCategory">
+            <option value="IT / Jaringan">IT / Jaringan</option>
+            <option value="Aplikasi">Aplikasi</option>
+            <option value="Hardware / Printer">Hardware / Printer</option>
+            <option value="Permohonan Data">Permohonan Data</option>
+          </select>
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label>Prioritas</label>
+          <select id="ticketPriority">
+            <option value="Normal">Normal</option>
+            <option value="Sedang">Sedang</option>
+            <option value="Tinggi">Tinggi</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Judul Masalah</label>
+        <input type="text" id="ticketTitle" required placeholder="Singkat dan jelas">
+      </div>
+      <div class="form-group">
+        <label>Detail Permasalahan</label>
+        <textarea id="ticketDetail" required placeholder="Jelaskan kronologi kendala..."></textarea>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+        <button type="button" class="btn" onclick="closeModal('ticketModal')">Batal</button>
+        <button type="submit" class="btn btn-primary">Kirim Tiket Pengaduan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL KELOLA TIKET ADMIN -->
+<div class="modal-overlay" id="ticketAdminModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Respon Pengaduan Tiket (<span id="adminTicketCode"></span>)</h3>
+      <button class="btn btn-sm" onclick="closeModal('ticketAdminModal')">✕</button>
+    </div>
+    <form onsubmit="updateTicketStatus(event)">
+      <input type="hidden" id="adminTicketId">
+      <p style="font-size:13px; margin:0 0 4px;"><strong>Pemohon:</strong> <span id="adminTicketSender"></span></p>
+      <p style="font-size:13px; margin:0 0 4px;"><strong>Subjek:</strong> <span id="adminTicketSubject"></span></p>
+      <p style="font-size:13px; color:var(--muted); background:#f8fafc; padding:10px; border-radius:6px;" id="adminTicketDesc"></p>
+
+      <div class="form-group" style="margin-top:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <label style="margin:0;">Petugas Penanggung Jawab (Seksi PDAD)</label>
+          <button type="button" class="btn btn-sm btn-edit" onclick="openOfficerManagerModal()">⚙️ Edit Daftar Petugas</button>
+        </div>
+        <select id="adminTicketOfficer" required></select>
+      </div>
+      
+      <div class="form-group">
+        <label>Status Tiket</label>
+        <select id="adminTicketStatus">
+          <option value="Pending">Pending</option>
+          <option value="Dalam Proses">Dalam Proses</option>
+          <option value="Selesai">Selesai</option>
+          <option value="Ditolak">Ditolak</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Catatan Penyelesaian (Teknisi/Pengelola)</label>
+        <textarea id="adminTicketNotes" placeholder="Catatan perbaikan untuk pemohon..."></textarea>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+        <button type="button" class="btn" onclick="closeModal('ticketAdminModal')">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan Respon Tiket</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL KELOLA DAFTAR PETUGAS SEKSI PDAD -->
+<div class="modal-overlay" id="officerManagerModal">
+  <div class="modal" style="max-width: 480px;">
+    <div class="modal-header">
+      <h3>⚙️ Kelola Daftar Petugas Seksi PDAD</h3>
+      <button class="btn btn-sm" onclick="closeModal('officerManagerModal')">✕</button>
+    </div>
+    
+    <form onsubmit="addNewOfficer(event)" style="margin-bottom: 18px;">
+      <label style="font-size:12px; font-weight:600; color:var(--muted); display:block; margin-bottom:6px;">Tambah Petugas Baru</label>
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="newOfficerName" placeholder="Nama lengkap petugas..." required style="flex:1;">
+        <button type="submit" class="btn btn-primary btn-sm">➕ Tambah</button>
+      </div>
+    </form>
+
+    <div style="border-top:1px solid var(--line); padding-top:12px;">
+      <label style="font-size:12px; font-weight:600; color:var(--muted); display:block; margin-bottom:8px;">Daftar Petugas PDAD Aktif saat ini:</label>
+      <div id="officerListContainer" style="max-height: 200px; overflow-y: auto; display:flex; flex-direction:column; gap:6px;"></div>
+    </div>
+
+    <div style="display:flex; justify-content:flex-end; margin-top:18px;">
+      <button class="btn btn-sm" onclick="closeModal('officerManagerModal')">Selesai</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DOKUMEN & UPLOAD FILE -->
+<div class="modal-overlay" id="docModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="docModalTitle">Tambah / Upload Dokumen</h3>
+      <button class="btn btn-sm" onclick="closeModal('docModal')">✕</button>
+    </div>
+    <form onsubmit="saveDoc(event)">
+      <input type="hidden" id="docId">
+      
+      <div class="form-group">
+        <label>Nama Dokumen / SOP</label>
+        <input type="text" id="docName" required placeholder="Contoh: SOP Pelayanan Administrasi 2026">
+      </div>
+
+      <div class="form-group">
+        <label>Sumber File</label>
+        <div style="display: flex; gap: 15px; margin-bottom: 8px;">
+          <label style="font-weight: normal; cursor: pointer;">
+            <input type="radio" name="docSourceType" value="file" checked onchange="toggleDocSourceMode()"> 📁 Upload File Komputer
+          </label>
+          <label style="font-weight: normal; cursor: pointer;">
+            <input type="radio" name="docSourceType" value="link" onchange="toggleDocSourceMode()"> 🔗 Tautan Link / SharePoint
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group" id="fileUploadContainer">
+        <label>Pilih File (PDF, Word, Excel, PPT, Gambar, ZIP, dll)</label>
+        <div class="file-upload-box" onclick="document.getElementById('docFileInput').click()">
+          <span style="font-size: 28px;">📄</span>
+          <p style="margin: 4px 0 0; font-size: 13px; font-weight: 600; color: var(--blue);" id="fileUploadText">Klik di sini untuk memilih file dari komputer Anda</p>
+          <span style="font-size: 11px; color: var(--muted);" id="fileUploadSubtext">Mendukung format PDF, DOCX, XLSX, PNG, JPG, ZIP (Maks 15 MB)</span>
+          <input type="file" id="docFileInput" onchange="handleFileSelect(this)">
+        </div>
+      </div>
+
+      <div class="form-group" id="linkUrlContainer" style="display: none;">
+        <label>URL Dokumen / Link SharePoint (Opsional)</label>
+        <input type="text" id="docUrl" placeholder="https://kemenkeu.sharepoint.com/... atau https://...">
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <div class="form-group" style="flex: 1;">
+          <label>Kategori</label>
+          <select id="docCategory">
+            <option value="SOP">SOP</option>
+            <option value="Peraturan">Peraturan</option>
+            <option value="Template">Template</option>
+            <option value="Laporan">Laporan</option>
+            <option value="Panduan IT">Panduan IT</option>
+          </select>
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label>Tahun</label>
+          <input type="text" id="docYear" required value="2026">
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label>Status</label>
+          <select id="docStatus">
+            <option value="Aktif">Aktif</option>
+            <option value="Terbaru">Terbaru</option>
+            <option value="Arsip">Arsip</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+        <button type="button" class="btn" onclick="closeModal('docModal')">Batal</button>
+        <button type="submit" class="btn btn-primary" id="btnSaveDoc">Simpan & Upload Dokumen</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL BERITA -->
+<div class="modal-overlay" id="newsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="newsModalTitle">Tambah Berita</h3>
+      <button class="btn btn-sm" onclick="closeModal('newsModal')">✕</button>
+    </div>
+    <form onsubmit="saveNews(event)">
+      <input type="hidden" id="newsId">
+      <div class="form-group">
+        <label>Judul Berita / Pengumuman</label>
+        <input type="text" id="newsTitle" required placeholder="Judul berita...">
+      </div>
+      <div class="form-group">
+        <label>Tanggal Diposting</label>
+        <input type="text" id="newsDate" required placeholder="18 September 2026">
+      </div>
+      <div class="form-group">
+        <label>Isi Berita / Ringkasan</label>
+        <textarea id="newsContent" required placeholder="Isi berita singkat..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Lampiran Berkas / Surat Edaran (Opsional)</label>
+        <div class="file-upload-box" onclick="document.getElementById('newsFileInput').click()">
+          <span style="font-size: 24px;">📎</span>
+          <p style="margin: 4px 0 0; font-size: 13px; font-weight: 600; color: var(--blue);" id="newsFileUploadText">Klik di sini untuk mengunggah file lampiran</p>
+          <span style="font-size: 11px; color: var(--muted);" id="newsFileUploadSubtext">Mendukung format PDF, DOCX, XLSX, PNG, JPG, ZIP</span>
+          <input type="file" id="newsFileInput" onchange="handleNewsFileSelect(this)">
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+        <button type="button" class="btn" onclick="closeModal('newsModal')">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan Berita</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL FAQ -->
+<div class="modal-overlay" id="faqModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="faqModalTitle">Tambah FAQ</h3>
+      <button class="btn btn-sm" onclick="closeModal('faqModal')">✕</button>
+    </div>
+    <form onsubmit="saveFAQ(event)">
+      <input type="hidden" id="faqId">
+      <div class="form-group">
+        <label>Pertanyaan</label>
+        <input type="text" id="faqQuestion" required placeholder="Bagaimana cara...">
+      </div>
+      <div class="form-group">
+        <label>Jawaban</label>
+        <textarea id="faqAnswer" required placeholder="Jawaban rinci..."></textarea>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+        <button type="button" class="btn" onclick="closeModal('faqModal')">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan FAQ</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL QUICK LINK -->
+<div class="modal-overlay" id="quickModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="quickModalTitle">Tambah Quick Link</h3>
+      <button class="btn btn-sm" onclick="closeModal('quickModal')">✕</button>
+    </div>
+    <form onsubmit="saveQuick(event)">
+      <input type="hidden" id="quickId">
+      <div class="form-group">
+        <label>Nama Layanan / Aplikasi</label>
+        <input type="text" id="quickTitle" required placeholder="Contoh: Email Kantor">
+      </div>
+      <div class="form-group">
+        <label>Icon Emoji</label>
+        <input type="text" id="quickIcon" required value="💻">
+      </div>
+      <div class="form-group">
+        <label>Link Tujuan / Aksi Tab</label>
+        <input type="text" id="quickUrl" placeholder="https://... atau nama tab (misal: documents)">
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+        <button type="button" class="btn" onclick="closeModal('quickModal')">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan Link</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL UNIT KERJA -->
+<div class="modal-overlay" id="unitModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="unitModalTitle">Tambah Unit Kerja</h3>
+      <button class="btn btn-sm" onclick="closeModal('unitModal')">✕</button>
+    </div>
+    <form onsubmit="saveUnit(event)">
+      <input type="hidden" id="unitId">
+      <div class="form-group">
+        <label>Nama Unit Kerja</label>
+        <input type="text" id="unitName" required placeholder="Contoh: Seksi PDAD">
+      </div>
+      <div class="form-group">
+        <label>Target</label>
+        <input type="number" id="unitTarget" required value="500">
+      </div>
+      <div class="form-group">
+        <label>Realisasi</label>
+        <input type="number" id="unitRealisasi" required value="480">
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:20px;">
+        <button type="button" class="btn" onclick="closeModal('unitModal')">Batal</button>
+        <button type="submit" class="btn btn-primary">Simpan Data Unit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+let isAdmin = false;
+const ADMIN_PIN = "1234";
+
+// SUPABASE REALTIME CONFIGURATION
+// Publishable key aman digunakan di browser, tetapi akses database tetap harus
+// dikontrol dengan Row Level Security (lihat supabase_setup.sql).
+const SUPABASE_URL = "https://djdadynoaeedroxerwmm.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ygw-9v9Bnywhns4wwB-oZA_N7NMjrM3";
+const SUPABASE_TABLE = "portal_data";
+
+let supabaseClient = null;
+let remoteReady = false;
+let syncingRemote = false;
+
+const defaultData = {
+  kpi: [
+    { title: "Tiket Selesai", value: "98.4%", sub: "+2.1% bulan ini" },
+    { title: "SLA Respon IT", value: "14 Menit", sub: "Target < 30 mnt" },
+    { title: "Dokumen SOP", value: "142 Berkas", sub: "Aktif & terverifikasi" },
+    { title: "Surat Masuk/Keluar", value: "1,240", sub: "Tahun 2026" }
+  ],
+  status: [
+    { name: "Jaringan Intranet & Internet", status: "Normal", badge: "badge-green" },
+    { name: "Server E-SPT & Aplikasi Impor", status: "Normal", badge: "badge-green" },
+    { name: "Sistem Helpdesk & Tiket", status: "Normal", badge: "badge-green" },
+    { name: "Printer Office & Scanner", status: "Perbaikan", badge: "badge-yellow" }
+  ],
+  pdadOfficers: [
+    "Ahmad Fauzi (PDAD)",
+    "Rizky Pratama (PDAD)",
+    "Dewi Lestari (PDAD)",
+    "Budi Hermawan (PDAD)"
+  ],
+  tickets: [
+    { id: 1, code: "TKT-8921", user: "Budi Santoso", unit: "Seksi Pabean", category: "IT / Jaringan", priority: "Tinggi", title: "Printer Seksi Pabean Rusak", detail: "Kertas tersangkut dan tidak bisa cetak dokumen.", date: "17 Sep 2026", status: "Dalam Proses", notes: "Teknisi sedang meluncur ke lokasi.", officer: "Ahmad Fauzi (PDAD)" },
+    { id: 2, code: "TKT-8920", user: "Siti Rahma", unit: "Subbag Umum", category: "Aplikasi", priority: "Sedang", title: "Lupa Password Email Dinas", detail: "Mohon reset password email kantor.", date: "16 Sep 2026", status: "Selesai", notes: "Password temporary telah dikirim via SMS.", officer: "Rizky Pratama (PDAD)" }
+  ],
+  docs: [
+    { id: 101, name: "SOP Pelayanan Administrasi 2026", category: "SOP", year: "2026", status: "Aktif", url: "#", fileName: "SOP_Pelayanan_2026.pdf", fileSize: 2450000, fileExt: "pdf" },
+    { id: 102, name: "Petunjuk Teknis Impor Jalur Merah", category: "Panduan IT", year: "2026", status: "Terbaru", url: "#", fileName: "Juknis_Impor_2026.docx", fileSize: 1200000, fileExt: "docx" }
+  ],
+  news: [
+    { id: 201, title: "Sosialisasi Pemutakhiran Data Mandiri Pegawai 2026", date: "18 Sep 2026", content: "Seluruh pegawai diharapkan memperbarui data profil pada portal intranet sebelum akhir bulan." }
+  ],
+  faq: [
+    { id: 301, question: "Bagaimana cara membuat tiket pengaduan IT?", answer: "Masuk ke menu Helpdesk Tiket, klik tombol 'Buat Tiket Baru', lalu isi formulir pengaduan." }
+  ],
+  quick: [
+    { id: 401, title: "Helpdesk Tiket", icon: "🎫", page: "tickets" },
+    { id: 402, title: "Dokumen SOP", icon: "📁", page: "documents" }
+  ],
+  units: [
+    { id: 501, name: "Seksi PDAD", target: 500, realisasi: 485 },
+    { id: 502, name: "Seksi Pabean", target: 800, realisasi: 760 }
+  ]
+};
+
+// Cache lokal tetap dipakai agar fungsi render/edit yang sudah ada tetap sinkron.
+// Sumber utama setelah inisialisasi adalah Supabase.
+const dataCache = {};
+Object.keys(defaultData).forEach(k => {
+  const local = localStorage.getItem("portal_data_" + k);
+  if (local) {
+    try { dataCache[k] = JSON.parse(local); } catch(e) { dataCache[k] = defaultData[k]; }
+  } else {
+    dataCache[k] = defaultData[k];
+  }
+});
+
+function getData(key) {
+  return dataCache[key] ?? defaultData[key] ?? [];
+}
+
+function setData(key, data) {
+  dataCache[key] = data;
+  localStorage.setItem("portal_data_" + key, JSON.stringify(data));
+
+  if (remoteReady && supabaseClient) {
+    supabaseClient
+      .from(SUPABASE_TABLE)
+      .upsert({
+        key: key,
+        data: data,
+        updated_at: new Date().toISOString()
+      }, { onConflict: "key" })
+      .then(({ error }) => {
+        if (error) console.error("Supabase sync error:", error);
+      });
+  }
+}
+
+async function initializeSupabase() {
+  if (!window.supabase || !window.supabase.createClient) {
+    console.warn("Supabase library belum termuat. Portal berjalan dengan cache lokal.");
+    return;
+  }
+
+  supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_PUBLISHABLE_KEY
+  );
+
+  const { data: rows, error } = await supabaseClient
+    .from(SUPABASE_TABLE)
+    .select("key,data");
+
+  if (error) {
+    console.error("Supabase load error:", error);
+    showToast("Database online belum dapat diakses. Periksa SQL/RLS Supabase.", "error");
+    return;
+  }
+
+  remoteReady = true;
+
+  // Jika tabel kosong, isi dengan data bawaan satu kali.
+  if (!rows || rows.length === 0) {
+    const seedRows = Object.keys(defaultData).map(key => ({
+      key,
+      data: defaultData[key],
+      updated_at: new Date().toISOString()
+    }));
+
+    const { error: seedError } = await supabaseClient
+      .from(SUPABASE_TABLE)
+      .upsert(seedRows, { onConflict: "key" });
+
+    if (seedError) {
+      console.error("Supabase seed error:", seedError);
+    }
+  } else {
+    rows.forEach(row => {
+      if (row.key) {
+        dataCache[row.key] = row.data;
+        localStorage.setItem("portal_data_" + row.key, JSON.stringify(row.data));
+      }
+    });
+  }
+
+  subscribeRealtime();
+  renderAll();
+}
+
+function subscribeRealtime() {
+  if (!supabaseClient) return;
+
+  supabaseClient
+    .channel("portal-data-realtime")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: SUPABASE_TABLE },
+      payload => {
+        const row = payload.new || payload.old;
+        if (!row || !row.key) return;
+
+        if (payload.eventType === "DELETE") {
+          dataCache[row.key] = defaultData[row.key] ?? [];
+          localStorage.removeItem("portal_data_" + row.key);
+        } else {
+          dataCache[row.key] = row.data;
+          localStorage.setItem("portal_data_" + row.key, JSON.stringify(row.data));
+        }
+
+        renderAll();
+      }
+    )
+    .subscribe();
+}
+
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById(pageId);
+  if (target) target.classList.add('active');
+  
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  const navBtn = document.querySelector(`nav button[onclick*="${pageId}"]`);
+  if (navBtn) navBtn.classList.add('active');
+}
+
+function openModal(id) {
+  const m = document.getElementById(id);
+  if (m) m.classList.add('active');
+}
+
+function closeModal(id) {
+  const m = document.getElementById(id);
+  if (m) m.classList.remove('active');
+}
+
+function updateAdminUI() {
+  const btn = document.getElementById('adminToggleBtn');
+  if (isAdmin) {
+    document.body.classList.add('body-admin-active');
+    if (btn) {
+      btn.classList.add('active');
+      btn.innerHTML = "🔓 Mode Pengelola (Aktif)";
+    }
+  } else {
+    document.body.classList.remove('body-admin-active');
+    if (btn) {
+      btn.classList.remove('active');
+      btn.innerHTML = "🔒 Mode Pengelola";
+    }
+  }
+}
+
+function promptAdminLogin() {
+  if (isAdmin) {
+    isAdmin = false;
+    updateAdminUI();
+    showToast("Anda telah keluar dari Mode Pengelola.", "info");
+  } else {
+    const inputPin = prompt("🔑 Masukkan PIN Pengelola Portal:");
+    if (inputPin === ADMIN_PIN) {
+      isAdmin = true;
+      updateAdminUI();
+      showToast("✅ Mode Pengelola Aktif!", "success");
+    } else if (inputPin !== null) {
+      showToast("❌ PIN Salah! Akses ditolak.", "error");
+    }
+  }
+}
+
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  if (!container) return;
+  
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.innerText = message;
+  
+  container.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
+}
+
+function customConfirm(message, onConfirm) {
+  const modal = document.getElementById('customConfirmModal');
+  const msgEl = document.getElementById('confirmModalMessage');
+  const okBtn = document.getElementById('confirmModalOkBtn');
+  const cancelBtn = document.getElementById('confirmModalCancelBtn');
+
+  if (!modal) return;
+
+  msgEl.innerText = message;
+  modal.classList.add('active');
+
+  const handleOk = () => {
+    modal.classList.remove('active');
+    cleanup();
+    onConfirm();
+  };
+
+  const handleCancel = () => {
+    modal.classList.remove('active');
+    cleanup();
+  };
+
+  const cleanup = () => {
+    okBtn.removeEventListener('click', handleOk);
+    cancelBtn.removeEventListener('click', handleCancel);
+  };
+
+  okBtn.addEventListener('click', handleOk);
+  cancelBtn.addEventListener('click', handleCancel);
+}
+
+function renderKPI() {
+  const kpis = getData('kpi');
+  const container = document.getElementById('kpiContainer');
+  if (!container) return;
+  let html = '';
+  kpis.forEach(item => {
+    html += `
+      <div class="card kpi">
+        <span>${item.title}</span>
+        <b>${item.value}</b>
+        <span style="font-size:11px; color:var(--muted);">${item.sub}</span>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function renderStatus() {
+  const statuses = getData('status');
+  const container = document.getElementById('statusContainer');
+  if (!container) return;
+  let html = '';
+  statuses.forEach(item => {
+    html += `
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--line);">
+        <span style="font-size:13px; font-weight:600;">${item.name}</span>
+        <span class="badge ${item.badge}">${item.status}</span>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function formatBytes(bytes, decimals = 2) {
+  if (!bytes || bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
+function renderDocs() {
+  const docs = getData('docs');
+  const tbody = document.getElementById('docTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  docs.forEach(d => {
+    let badgeClass = 'badge-blue';
+    if (d.status === 'Aktif') badgeClass = 'badge-green';
+    else if (d.status === 'Terbaru') badgeClass = 'badge-yellow';
+    else if (d.status === 'Arsip') badgeClass = 'badge-gray';
+
+    const sizeStr = d.fileSize ? formatBytes(d.fileSize) : (d.fileExt ? d.fileExt.toUpperCase() : 'Tautan');
+    const actionBtn = d.fileData ? `
+      <button class="btn btn-sm btn-primary" onclick="openOrDownloadDoc(${d.id}, 'view')">👁️ Lihat</button>
+      <button class="btn btn-sm" onclick="openOrDownloadDoc(${d.id}, 'download')">📥 Unduh</button>
+    ` : (d.url && d.url !== '#' ? `<a href="${d.url}" target="_blank" class="btn btn-sm btn-primary">🔗 Kunjungi Link</a>` : '<span style="color:var(--muted); font-size:11px;">Tanpa Berkas</span>');
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="text-align:center;" class="admin-controls">
+        <input type="checkbox" class="doc-checkbox" value="${d.id}" onchange="updateSelectedDocCount()">
+      </td>
+      <td><b>${d.name}</b><br><span style="font-size:11px; color:var(--muted);">${d.fileName || d.url || 'Dokumen Resmi'}</span></td>
+      <td><span class="badge badge-purple">${d.category}</span></td>
+      <td style="font-size:12px; color:var(--muted);">${sizeStr}</td>
+      <td>${d.year}</td>
+      <td><span class="badge ${badgeClass}">${d.status}</span></td>
+      <td>
+        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+          ${actionBtn}
+          <div class="admin-controls" style="display:inline-flex; gap:4px; margin-left:6px;">
+            <button class="btn btn-sm btn-edit" onclick="editDoc(${d.id})" title="Edit">✏️</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteDoc(${d.id})" title="Hapus">🗑️</button>
+          </div>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  updateSelectedDocCount();
+}
+
+function openDocModal() {
+  if (!isAdmin) { showToast("🔒 Hanya Pengelola yang dapat mengunggah dokumen.", "error"); return; }
+  currentSelectedFile = null;
+  document.getElementById('docId').value = '';
+  document.getElementById('docName').value = '';
+  document.getElementById('docUrl').value = '';
+  document.getElementById('docYear').value = '2026';
+  document.getElementById('fileUploadText').innerText = 'Klik di sini untuk memilih file dari komputer Anda';
+  document.getElementById('fileUploadSubtext').innerText = 'Mendukung format PDF, DOCX, XLSX, PNG, JPG, ZIP (Maks 15 MB)';
+  document.getElementById('docModalTitle').innerText = 'Tambah / Upload Dokumen';
+  
+  // Reset radio to file
+  const radios = document.getElementsByName('docSourceType');
+  if(radios[0]) radios[0].checked = true;
+  toggleDocSourceMode();
+
+  openModal('docModal');
+}
+
+function toggleDocSourceMode() {
+  const val = document.querySelector('input[name="docSourceType"]:checked').value;
+  const fileContainer = document.getElementById('fileUploadContainer');
+  const linkContainer = document.getElementById('linkUrlContainer');
+  if (val === 'file') {
+    fileContainer.style.display = 'block';
+    linkContainer.style.display = 'none';
+  } else {
+    fileContainer.style.display = 'none';
+    linkContainer.style.display = 'block';
+  }
+}
+
+let currentSelectedFile = null;
+function handleFileSelect(input) {
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    currentSelectedFile = file;
+    document.getElementById('fileUploadText').innerText = `📄 ${file.name}`;
+    document.getElementById('fileUploadSubtext').innerText = `Ukuran: ${formatBytes(file.size)} | Tipe: ${file.type || 'Berkas'}`;
+  }
+}
+
+function saveDoc(e) {
+  e.preventDefault();
+  if (!isAdmin) return;
+
+  const docs = getData('docs');
+  const id = document.getElementById('docId').value;
+  const name = document.getElementById('docName').value;
+  const category = document.getElementById('docCategory').value;
+  const year = document.getElementById('docYear').value;
+  const status = document.getElementById('docStatus').value;
+  const sourceType = document.querySelector('input[name="docSourceType"]:checked').value;
+  const urlInput = document.getElementById('docUrl').value || '#';
+
+  const processAndSave = (fileData = null, fileName = null, fileSize = 0, fileExt = null) => {
+    if (id) {
+      const idx = docs.findIndex(d => d.id == id);
+      if (idx !== -1) {
+        docs[idx] = {
+          ...docs[idx],
+          name, category, year, status,
+          url: sourceType === 'link' ? urlInput : docs[idx].url,
+          ...(fileData ? { fileData, fileName, fileSize, fileExt } : {})
+        };
+      }
+    } else {
+      docs.unshift({
+        id: Date.now(),
+        name,
+        category,
+        year,
+        status,
+        url: sourceType === 'link' ? urlInput : '#',
+        fileData,
+        fileName,
+        fileSize,
+        fileExt: fileExt || (fileName ? fileName.split('.').pop().toLowerCase() : 'file')
+      });
+    }
+
+    setData('docs', docs);
+    renderDocs();
+    closeModal('docModal');
+    showToast("✅ Dokumen berhasil disimpan dan diunggah!", "success");
+  };
+
+  if (sourceType === 'file' && currentSelectedFile) {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      const fileData = evt.target.result;
+      const fileName = currentSelectedFile.name;
+      const fileSize = currentSelectedFile.size;
+      const fileExt = fileName.split('.').pop().toLowerCase();
+      processAndSave(fileData, fileName, fileSize, fileExt);
+    };
+    reader.readAsDataURL(currentSelectedFile);
+  } else {
+    processAndSave();
+  }
+}
+
+function editDoc(id) {
+  if (!isAdmin) { showToast("🔒 Hanya Pengelola yang dapat mengedit dokumen.", "error"); return; }
+  const docs = getData('docs');
+  const d = docs.find(item => item.id === id);
+  if (!d) return;
+
+  currentSelectedFile = null;
+  document.getElementById('docId').value = d.id;
+  document.getElementById('docName').value = d.name;
+  document.getElementById('docCategory').value = d.category;
+  document.getElementById('docYear').value = d.year;
+  document.getElementById('docStatus').value = d.status;
+  document.getElementById('docUrl').value = d.url !== '#' ? d.url : '';
+
+  if (d.fileName) {
+    document.getElementById('fileUploadText').innerText = `📄 Tersimpan: ${d.fileName}`;
+    document.getElementById('fileUploadSubtext').innerText = `Ukuran: ${formatBytes(d.fileSize || 0)} (Pilih file baru jika ingin mengganti)`;
+  } else {
+    document.getElementById('fileUploadText').innerText = 'Klik di sini untuk memilih file dari komputer Anda';
+    document.getElementById('fileUploadSubtext').innerText = 'Mendukung format PDF, DOCX, XLSX, PNG, JPG, ZIP';
+  }
+
+  const radios = document.getElementsByName('docSourceType');
+  if (d.url && d.url !== '#' && !d.fileName) {
+    if(radios[1]) radios[1].checked = true;
+  } else {
+    if(radios[0]) radios[0].checked = true;
+  }
+  toggleDocSourceMode();
+
+  document.getElementById('docModalTitle').innerText = 'Edit Dokumen';
+  openModal('docModal');
+}
+
+function deleteDoc(id) {
+  if (!isAdmin) { showToast("🔒 Hanya Pengelola yang dapat menghapus dokumen.", "error"); return; }
+  customConfirm("Apakah Anda yakin ingin menghapus dokumen ini?", () => {
+    let docs = getData('docs');
+    docs = docs.filter(item => item.id !== id);
+    setData('docs', docs);
+    renderDocs();
+    showToast("Dokumen telah dihapus.", "info");
+  });
+}
+
+function openOrDownloadDoc(id, action = 'view') {
+  const docs = getData('docs');
+  const d = docs.find(item => item.id === id);
+  if (!d || !d.fileData) {
+    showToast("File dokumen tidak ditemukan.", "error");
+    return;
+  }
+
+  if (action === 'download') {
+    const a = document.createElement('a');
+    a.href = d.fileData;
+    a.download = d.fileName || (d.name + '.' + (d.fileExt || 'dat'));
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast(`Mengunduh berkas ${d.fileName}...`, "success");
+  } else {
+    const win = window.open();
+    if (win) {
+      if (d.fileData.startsWith('data:image') || d.fileData.startsWith('data:application/pdf')) {
+        win.document.write(`<iframe src="${d.fileData}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
+      } else {
+        win.document.write(`<h3>Pratinjau Berkas: ${d.fileName || d.name}</h3><p>Ukuran: ${formatBytes(d.fileSize)}</p><a href="${d.fileData}" download="${d.fileName || d.name}">Klik di sini untuk mengunduh dokumen ini</a>`);
+      }
+    } else {
+      showToast("Pop-up diblokir. Mengunduh file langsung...", "info");
+      openOrDownloadDoc(id, 'download');
+    }
+  }
+}
+
+function toggleSelectAllDocs(master) {
+  document.querySelectorAll('.doc-checkbox').forEach(cb => {
+    cb.checked = master.checked;
+  });
+  updateSelectedDocCount();
+}
+
+function updateSelectedDocCount() {
+  const checked = document.querySelectorAll('.doc-checkbox:checked').length;
+  const countEl = document.getElementById('selectedDocCount');
+  if (countEl) countEl.innerText = checked;
+}
+
+function batchEditDocStatus() {
+  if (!isAdmin) return;
+  const checked = document.querySelectorAll('.doc-checkbox:checked');
+  if (checked.length === 0) {
+    showToast("Pilih minimal satu dokumen terlebih dahulu.", "error");
+    return;
+  }
+  const newStatus = prompt("Masukkan status baru untuk dokumen terpilih (Aktif / Terbaru / Arsip):");
+  if (!newStatus) return;
+
+  let docs = getData('docs');
+  const ids = Array.from(checked).map(cb => parseInt(cb.value));
+  docs = docs.map(d => ids.includes(d.id) ? { ...d, status: newStatus } : d);
+  setData('docs', docs);
+  renderDocs();
+  showToast(`Berhasil memperbarui status ${checked.length} dokumen.`, "success");
+}
+
+function deleteSelectedDocs() {
+  if (!isAdmin) return;
+  const checked = document.querySelectorAll('.doc-checkbox:checked');
+  if (checked.length === 0) {
+    showToast("Pilih minimal satu dokumen terlebih dahulu.", "error");
+    return;
+  }
+  customConfirm(`Yakin ingin menghapus ${checked.length} dokumen yang dipilih?`, () => {
+    let docs = getData('docs');
+    const ids = Array.from(checked).map(cb => parseInt(cb.value));
+    docs = docs.filter(d => !ids.includes(d.id));
+    setData('docs', docs);
+    renderDocs();
+    showToast("Dokumen terpilih telah dihapus.", "info");
+  });
+}
+
+function renderTickets(searchQuery = '') {
+  const tickets = getData('tickets');
+  const tbody = document.getElementById('ticketTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  const q = searchQuery.toLowerCase().trim();
+  const filtered = tickets.filter(t => 
+    !q || t.code.toLowerCase().includes(q) || t.user.toLowerCase().includes(q) || t.title.toLowerCase().includes(q) || (t.officer && t.officer.toLowerCase().includes(q))
+  );
+
+  filtered.forEach(t => {
+    let badgeClass = 'badge-yellow';
+    if (t.status === 'Selesai') badgeClass = 'badge-green';
+    else if (t.status === 'Ditolak') badgeClass = 'badge-red';
+    else if (t.status === 'Dalam Proses') badgeClass = 'badge-blue';
+
+    const officerBadge = t.officer 
+      ? `<br><span style="font-size:11px; color:var(--dark); font-weight:600;">👨‍💻 Petugas: ${t.officer}</span>` 
+      : `<br><span style="font-size:11px; color:var(--muted); italic;">👨‍💻 Petugas: Belum ditunjuk</span>`;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><b>${t.code}</b></td>
+      <td>${t.user}<br><span style="font-size:11px; color:var(--muted);">${t.unit}</span></td>
+      <td>${t.title}</td>
+      <td>${t.category}</td>
+      <td>${t.date}</td>
+      <td>
+        <span class="badge ${badgeClass}">${t.status}</span>
+        ${officerBadge}
+      </td>
+      <td class="admin-controls">
+        <button class="btn btn-sm" onclick="openAdminTicketModal(${t.id})">⚙️ Kelola</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function openNewTicketModal() {
+  document.getElementById('ticketUser').value = '';
+  document.getElementById('ticketUnit').value = '';
+  document.getElementById('ticketTitle').value = '';
+  document.getElementById('ticketDetail').value = '';
+  openModal('ticketModal');
+}
+
+function saveNewTicket(e) {
+  e.preventDefault();
+  const tickets = getData('tickets');
+  const newId = Date.now();
+  const code = 'TKT-' + Math.floor(1000 + Math.random() * 9000);
+  
+  tickets.unshift({
+    id: newId,
+    code: code,
+    user: document.getElementById('ticketUser').value,
+    unit: document.getElementById('ticketUnit').value,
+    category: document.getElementById('ticketCategory').value,
+    priority: document.getElementById('ticketPriority').value,
+    title: document.getElementById('ticketTitle').value,
+    detail: document.getElementById('ticketDetail').value,
+    date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+    status: 'Pending',
+    notes: '-',
+    officer: null
+  });
+
+  setData('tickets', tickets);
+  renderTickets();
+  closeModal('ticketModal');
+  showToast(`✅ Tiket ${code} berhasil dikirim!`, "success");
+}
+
+function openAdminTicketModal(id) {
+  if (!isAdmin) return;
+  const tickets = getData('tickets');
+  const t = tickets.find(item => item.id === id);
+  if (!t) return;
+
+  document.getElementById('adminTicketId').value = t.id;
+  document.getElementById('adminTicketCode').innerText = t.code;
+  document.getElementById('adminTicketSender').innerText = t.user + ' (' + t.unit + ')';
+  document.getElementById('adminTicketSubject').innerText = t.title;
+  document.getElementById('adminTicketDesc').innerText = t.detail;
+  document.getElementById('adminTicketStatus').value = t.status;
+  document.getElementById('adminTicketNotes').value = t.notes !== '-' ? t.notes : '';
+
+  // Populate officers dropdown
+  const officers = getData('pdadOfficers');
+  const select = document.getElementById('adminTicketOfficer');
+  let optionsHtml = '<option value="">-- Pilih Petugas PDAD --</option>';
+  officers.forEach(off => {
+    const selected = t.officer === off ? 'selected' : '';
+    optionsHtml += `<option value="${off}" ${selected}>${off}</option>`;
+  });
+  select.innerHTML = optionsHtml;
+
+  openModal('ticketAdminModal');
+}
+
+function updateTicketStatus(e) {
+  e.preventDefault();
+  if (!isAdmin) return;
+
+  const id = parseInt(document.getElementById('adminTicketId').value);
+  const status = document.getElementById('adminTicketStatus').value;
+  const notes = document.getElementById('adminTicketNotes').value || '-';
+  const officer = document.getElementById('adminTicketOfficer').value;
+
+  let tickets = getData('tickets');
+  const idx = tickets.findIndex(t => t.id === id);
+  if (idx !== -1) {
+    tickets[idx] = { ...tickets[idx], status, notes, officer };
+    setData('tickets', tickets);
+    renderTickets();
+    closeModal('ticketAdminModal');
+    showToast("✅ Respon tiket berhasil disimpan!", "success");
+  }
+}
+
+function searchTicket() {
+  const query = document.getElementById('ticketSearchInput').value;
+  renderTickets(query);
+}
+
+function openOfficerManagerModal() {
+  renderOfficerList();
+  openModal('officerManagerModal');
+}
+
+function renderOfficerList() {
+  const officers = getData('pdadOfficers');
+  const container = document.getElementById('officerListContainer');
+  if (!container) return;
+  let html = '';
+  officers.forEach((off, idx) => {
+    html += `
+      <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:6px 10px; border-radius:6px; border:1px solid var(--line);">
+        <span style="font-size:13px; font-weight:600;">${off}</span>
+        <button type="button" class="btn btn-sm btn-danger" onclick="deleteOfficer(${idx})">🗑️ Hapus</button>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function addNewOfficer(e) {
+  e.preventDefault();
+  const input = document.getElementById('newOfficerName');
+  const name = input.value.trim();
+  if (!name) return;
+
+  const officers = getData('pdadOfficers');
+  officers.push(name + ' (PDAD)');
+  setData('pdadOfficers', officers);
+  input.value = '';
+  renderOfficerList();
+  showToast("Petugas baru ditambahkan.", "success");
+}
+
+function deleteOfficer(idx) {
+  let officers = getData('pdadOfficers');
+  officers.splice(idx, 1);
+  setData('pdadOfficers', officers);
+  renderOfficerList();
+  showToast("Petugas dihapus.", "info");
+}
+
+let currentSelectedNewsFile = null;
+function handleNewsFileSelect(input) {
+  if (input.files && input.files[0]) {
+    const file = input.files[0];
+    currentSelectedNewsFile = file;
+    document.getElementById('newsFileUploadText').innerText = `📄 ${file.name}`;
+    document.getElementById('newsFileUploadSubtext').innerText = `Ukuran: ${formatBytes(file.size)} | Tipe: ${file.type || 'Berkas'}`;
+  }
+}
+
+function renderNews() {
+  const newsList = getData('news');
+  const latestContainer = document.getElementById('latestNewsContainer');
+  const fullContainer = document.getElementById('fullNewsContainer');
+
+  if (latestContainer) {
+    let latestHtml = '';
+    newsList.slice(0, 3).forEach(item => {
+      const fileBtn = item.fileData ? `
+        <div style="margin-top:8px;">
+          <button class="btn btn-sm btn-primary" onclick="openOrDownloadNewsFile(${item.id}, 'view')">👁️ Lihat Lampiran</button>
+          <button class="btn btn-sm" onclick="openOrDownloadNewsFile(${item.id}, 'download')">📥 Unduh (${item.fileName || 'Berkas'})</button>
+        </div>
+      ` : '';
+
+      latestHtml += `
+        <div class="news-item">
+          <div class="admin-controls" style="float:right;">
+            <button class="btn btn-sm btn-edit" onclick="editNews(${item.id})">✏️ Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteNews(${item.id})">🗑️ Hapus</button>
+          </div>
+          <h3>${item.title}</h3>
+          <p>${item.content}</p>
+          ${fileBtn}
+          <span class="date" style="display:block; margin-top:4px;">📅 ${item.date}</span>
+        </div>
+      `;
+    });
+    latestContainer.innerHTML = latestHtml || '<p style="font-size:13px; color:var(--muted);">Belum ada pengumuman.</p>';
+  }
+
+  if (fullContainer) {
+    let fullHtml = '';
+    newsList.forEach(item => {
+      const fileBtn = item.fileData ? `
+        <div style="margin-top:10px; padding:10px; background:#f8fafc; border:1px solid var(--line); border-radius:8px; display:inline-flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <span style="font-size:13px; font-weight:600; color:var(--dark);">📎 Lampiran: ${item.fileName} (${formatBytes(item.fileSize || 0)})</span>
+          <button class="btn btn-sm btn-primary" onclick="openOrDownloadNewsFile(${item.id}, 'view')">👁️ Lihat</button>
+          <button class="btn btn-sm" onclick="openOrDownloadNewsFile(${item.id}, 'download')">📥 Unduh File</button>
+        </div>
+      ` : '';
+
+      fullHtml += `
+        <div class="news-item" style="padding: 16px 0;">
+          <div class="admin-controls" style="float:right;">
+            <button class="btn btn-sm btn-edit" onclick="editNews(${item.id})">✏️ Edit</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteNews(${item.id})">🗑️ Hapus</button>
+          </div>
+          <h3 style="font-size:16px; font-weight:650; color:var(--dark);">${item.title}</h3>
+          <span class="date" style="display:block; margin: 4px 0 10px;">📅 ${item.date}</span>
+          <p style="font-size:14px; line-height:1.6; color:var(--text);">${item.content}</p>
+          ${fileBtn}
+        </div>
+      `;
+    });
+    fullContainer.innerHTML = fullHtml || '<p style="font-size:13px; color:var(--muted);">Belum ada berita atau pengumuman.</p>';
+  }
+}
+
+function openOrDownloadNewsFile(id, action = 'view') {
+  const newsList = getData('news');
+  const n = newsList.find(item => item.id === id);
+  if (!n || !n.fileData) {
+    showToast("Lampiran file tidak ditemukan.", "error");
+    return;
+  }
+
+  if (action === 'download') {
+    const a = document.createElement('a');
+    a.href = n.fileData;
+    a.download = n.fileName || (n.title + '.' + (n.fileExt || 'dat'));
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast(`Mengunduh lampiran ${n.fileName}...`, "success");
+  } else {
+    const win = window.open();
+    if (win) {
+      if (n.fileData.startsWith('data:image') || n.fileData.startsWith('data:application/pdf')) {
+        win.document.write(`<iframe src="${n.fileData}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
+      } else {
+        win.document.write(`<h3>Pratinjau Lampiran: ${n.fileName || n.title}</h3><p>Ukuran: ${formatBytes(n.fileSize)}</p><a href="${n.fileData}" download="${n.fileName || n.title}">Klik di sini untuk mengunduh lampiran ini</a>`);
+      }
+    } else {
+      showToast("Pop-up diblokir. Mengunduh lampiran langsung...", "info");
+      openOrDownloadNewsFile(id, 'download');
+    }
+  }
+}
+
+function openNewsModal() {
+  if (!isAdmin) { showToast("🔒 Hanya Pengelola yang dapat menambah berita.", "error"); return; }
+  currentSelectedNewsFile = null;
+  document.getElementById('newsId').value = '';
+  document.getElementById('newsTitle').value = '';
+  document.getElementById('newsDate').value = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+  document.getElementById('newsContent').value = '';
+  document.getElementById('newsFileInput').value = '';
+  document.getElementById('newsFileUploadText').innerText = 'Klik di sini untuk mengunggah file lampiran';
+  document.getElementById('newsFileUploadSubtext').innerText = 'Mendukung format PDF, DOCX, XLSX, PNG, JPG, ZIP';
+  document.getElementById('newsModalTitle').innerText = 'Tambah Berita';
+  openModal('newsModal');
+}
+
+function saveNews(e) {
+  e.preventDefault();
+  if (!isAdmin) return;
+
+  const newsList = getData('news');
+  const id = document.getElementById('newsId').value;
+  const title = document.getElementById('newsTitle').value;
+  const date = document.getElementById('newsDate').value;
+  const content = document.getElementById('newsContent').value;
+
+  const processAndSaveNews = (fileData = null, fileName = null, fileSize = 0, fileExt = null) => {
+    if (id) {
+      const idx = newsList.findIndex(n => n.id == id);
+      if (idx !== -1) {
+        newsList[idx] = { 
+          ...newsList[idx], 
+          title, date, content,
+          ...(fileData ? { fileData, fileName, fileSize, fileExt } : {})
+        };
+      }
+    } else {
+      newsList.unshift({
+        id: Date.now(),
+        title,
+        date,
+        content,
+        fileData,
+        fileName,
+        fileSize,
+        fileExt: fileExt || (fileName ? fileName.split('.').pop().toLowerCase() : null)
+      });
+    }
+
+    setData('news', newsList);
+    renderNews();
+    closeModal('newsModal');
+    showToast("✅ Berita / Pengumuman berhasil disimpan!", "success");
+  };
+
+  if (currentSelectedNewsFile) {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      const fileData = evt.target.result;
+      const fileName = currentSelectedNewsFile.name;
+      const fileSize = currentSelectedNewsFile.size;
+      const fileExt = fileName.split('.').pop().toLowerCase();
+      processAndSaveNews(fileData, fileName, fileSize, fileExt);
+    };
+    reader.readAsDataURL(currentSelectedNewsFile);
+  } else {
+    processAndSaveNews();
+  }
+}
+
+function editNews(id) {
+  if (!isAdmin) { showToast("🔒 Hanya Pengelola yang dapat mengedit berita.", "error"); return; }
+  const newsList = getData('news');
+  const n = newsList.find(item => item.id === id);
+  if (!n) return;
+
+  currentSelectedNewsFile = null;
+  document.getElementById('newsId').value = n.id;
+  document.getElementById('newsTitle').value = n.title;
+  document.getElementById('newsDate').value = n.date;
+  document.getElementById('newsContent').value = n.content;
+  document.getElementById('newsFileInput').value = '';
+  
+  if (n.fileName) {
+    document.getElementById('newsFileUploadText').innerText = `📄 Tersimpan: ${n.fileName}`;
+    document.getElementById('newsFileUploadSubtext').innerText = `Ukuran: ${formatBytes(n.fileSize || 0)} (Klik jika ingin mengganti file)`;
+  } else {
+    document.getElementById('newsFileUploadText').innerText = 'Klik di sini untuk mengunggah file lampiran';
+    document.getElementById('newsFileUploadSubtext').innerText = 'Mendukung format PDF, DOCX, XLSX, PNG, JPG, ZIP';
+  }
+
+  document.getElementById('newsModalTitle').innerText = 'Edit Berita';
+  openModal('newsModal');
+}
+
+function deleteNews(id) {
+  if (!isAdmin) { showToast("🔒 Hanya Pengelola yang dapat menghapus berita.", "error"); return; }
+  customConfirm("Apakah Anda yakin ingin menghapus berita ini?", () => {
+    let newsList = getData('news');
+    newsList = newsList.filter(item => item.id !== id);
+    setData('news', newsList);
+    renderNews();
+    showToast("Berita telah dihapus.", "info");
+  });
+}
+
+function renderFAQ() {
+  const faqs = getData('faq');
+  const container = document.getElementById('faqContainer');
+  if(!container) return;
+  let html = '';
+  faqs.forEach(item => {
+    html += `
+      <div class="card faq" onclick="this.classList.toggle('open')">
+        <div class="admin-controls" style="float:right;">
+          <button class="btn btn-sm btn-edit" onclick="event.stopPropagation(); editFAQ(${item.id})">✏️ Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteFAQ(${item.id})">🗑️ Hapus</button>
+        </div>
+        <div class="faq-header">
+          <h3>💬 ${item.question}</h3>
+          <span class="faq-chevron">▼</span>
+        </div>
+        <div class="answer">${item.answer}</div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function openFAQModal() {
+  if (!isAdmin) return;
+  document.getElementById('faqId').value = '';
+  document.getElementById('faqQuestion').value = '';
+  document.getElementById('faqAnswer').value = '';
+  document.getElementById('faqModalTitle').innerText = 'Tambah FAQ';
+  openModal('faqModal');
+}
+
+function saveFAQ(e) {
+  e.preventDefault();
+  if (!isAdmin) return;
+
+  const faqs = getData('faq');
+  const id = document.getElementById('faqId').value;
+  const question = document.getElementById('faqQuestion').value;
+  const answer = document.getElementById('faqAnswer').value;
+
+  if (id) {
+    const idx = faqs.findIndex(f => f.id == id);
+    if (idx !== -1) faqs[idx] = { ...faqs[idx], question, answer };
+  } else {
+    faqs.push({ id: Date.now(), question, answer });
+  }
+
+  setData('faq', faqs);
+  renderFAQ();
+  closeModal('faqModal');
+  showToast("FAQ berhasil disimpan!", "success");
+}
+
+function editFAQ(id) {
+  if (!isAdmin) return;
+  const faqs = getData('faq');
+  const f = faqs.find(item => item.id === id);
+  if(!f) return;
+
+  document.getElementById('faqId').value = f.id;
+  document.getElementById('faqQuestion').value = f.question;
+  document.getElementById('faqAnswer').value = f.answer;
+  document.getElementById('faqModalTitle').innerText = 'Edit FAQ';
+  openModal('faqModal');
+}
+
+function deleteFAQ(id) {
+  if (!isAdmin) return;
+  customConfirm("Yakin ingin menghapus FAQ ini?", () => {
+    let faqs = getData('faq');
+    faqs = faqs.filter(item => item.id !== id);
+    setData('faq', faqs);
+    renderFAQ();
+    showToast("FAQ telah dihapus.", "info");
+  });
+}
+
+function renderQuick() {
+  const quicks = getData('quick');
+  const homeContainer = document.getElementById('quickAccessHomeContainer');
+  let html = '';
+  quicks.forEach(item => {
+    const targetAction = item.page && item.page.startsWith('http') 
+      ? `window.open('${item.page}', '_blank')` 
+      : `showPage('${item.page}')`;
+
+    html += `
+      <div class="card" onclick="${targetAction}">
+        <div class="admin-controls" style="position:absolute; top:6px; right:6px;">
+          <button class="btn btn-sm btn-edit" onclick="event.stopPropagation(); editQuick(${item.id})">✏️</button>
+          <button class="btn btn-sm btn-danger" onclick="event.stopPropagation(); deleteQuick(${item.id})">🗑️</button>
+        </div>
+        <div class="icon">${item.icon}</div>
+        <p>${item.title}</p>
+      </div>
+    `;
+  });
+  if (homeContainer) homeContainer.innerHTML = html;
+}
+
+function openQuickModal() {
+  if (!isAdmin) return;
+  document.getElementById('quickId').value = '';
+  document.getElementById('quickTitle').value = '';
+  document.getElementById('quickIcon').value = '💻';
+  document.getElementById('quickUrl').value = '';
+  document.getElementById('quickModalTitle').innerText = 'Tambah Quick Link';
+  openModal('quickModal');
+}
+
+function saveQuick(e) {
+  e.preventDefault();
+  if (!isAdmin) return;
+
+  const quicks = getData('quick');
+  const id = document.getElementById('quickId').value;
+  const title = document.getElementById('quickTitle').value;
+  const icon = document.getElementById('quickIcon').value;
+  const page = document.getElementById('quickUrl').value || 'home';
+
+  if (id) {
+    const idx = quicks.findIndex(q => q.id == id);
+    if (idx !== -1) quicks[idx] = { ...quicks[idx], title, icon, page };
+  } else {
+    quicks.push({ id: Date.now(), title, icon, page });
+  }
+
+  setData('quick', quicks);
+  renderQuick();
+  closeModal('quickModal');
+  showToast("Quick link berhasil disimpan!", "success");
+}
+
+function editQuick(id) {
+  if (!isAdmin) return;
+  const quicks = getData('quick');
+  const q = quicks.find(item => item.id === id);
+  if(!q) return;
+
+  document.getElementById('quickId').value = q.id;
+  document.getElementById('quickTitle').value = q.title;
+  document.getElementById('quickIcon').value = q.icon;
+  document.getElementById('quickUrl').value = q.page;
+  document.getElementById('quickModalTitle').innerText = 'Edit Quick Link';
+  openModal('quickModal');
+}
+
+function deleteQuick(id) {
+  if (!isAdmin) return;
+  customConfirm("Hapus link pintasan ini?", () => {
+    let quicks = getData('quick');
+    quicks = quicks.filter(item => item.id !== id);
+    setData('quick', quicks);
+    renderQuick();
+    showToast("Quick link dihapus.", "info");
+  });
+}
+
+function renderUnits() {
+  const units = getData('units');
+  const tbody = document.getElementById('unitTableBody');
+  if(!tbody) return;
+  tbody.innerHTML = '';
+  
+  units.forEach(u => {
+    const capaian = u.target > 0 ? ((u.realisasi / u.target) * 100).toFixed(1) : 0;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><b>${u.name}</b></td>
+      <td>${u.target}</td>
+      <td>${u.realisasi}</td>
+      <td><span class="badge ${capaian >= 90 ? 'badge-green' : 'badge-yellow'}">${capaian}%</span></td>
+      <td class="admin-controls">
+        <button class="btn btn-sm btn-edit" onclick="editUnit(${u.id})">✏️ Edit</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteUnit(${u.id})">🗑️ Hapus</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function openUnitModal() {
+  if (!isAdmin) return;
+  document.getElementById('unitId').value = '';
+  document.getElementById('unitName').value = '';
+  document.getElementById('unitTarget').value = '500';
+  document.getElementById('unitRealisasi').value = '480';
+  document.getElementById('unitModalTitle').innerText = 'Tambah Unit Kerja';
+  openModal('unitModal');
+}
+
+function saveUnit(e) {
+  e.preventDefault();
+  if (!isAdmin) return;
+
+  const units = getData('units');
+  const id = document.getElementById('unitId').value;
+  const name = document.getElementById('unitName').value;
+  const target = parseInt(document.getElementById('unitTarget').value) || 0;
+  const realisasi = parseInt(document.getElementById('unitRealisasi').value) || 0;
+
+  if (id) {
+    const idx = units.findIndex(u => u.id == id);
+    if (idx !== -1) units[idx] = { ...units[idx], name, target, realisasi };
+  } else {
+    units.push({ id: Date.now(), name, target, realisasi });
+  }
+
+  setData('units', units);
+  renderUnits();
+  closeModal('unitModal');
+  showToast("Data unit kerja disimpan!", "success");
+}
+
+function editUnit(id) {
+  if (!isAdmin) return;
+  const units = getData('units');
+  const u = units.find(item => item.id === id);
+  if(!u) return;
+
+  document.getElementById('unitId').value = u.id;
+  document.getElementById('unitName').value = u.name;
+  document.getElementById('unitTarget').value = u.target;
+  document.getElementById('unitRealisasi').value = u.realisasi;
+  document.getElementById('unitModalTitle').innerText = 'Edit Data Unit';
+  openModal('unitModal');
+}
+
+function deleteUnit(id) {
+  if (!isAdmin) return;
+  customConfirm("Hapus data unit kerja ini?", () => {
+    let units = getData('units');
+    units = units.filter(item => item.id !== id);
+    setData('units', units);
+    renderUnits();
+    showToast("Data unit dihapus.", "info");
+  });
+}
+
+function openResetModal() {
+  if(!isAdmin) {
+    showToast("Hanya Pengelola yang dapat mereset data portal.", "error");
+    return;
+  }
+  customConfirm("Apakah Anda yakin ingin mengembalikan seluruh isi portal ke data bawaan awal?", () => {
+    Object.keys(defaultData).forEach(k => {
+      dataCache[k] = defaultData[k];
+      localStorage.removeItem("portal_data_" + k);
+    });
+
+    if (remoteReady && supabaseClient) {
+      const resetRows = Object.keys(defaultData).map(key => ({
+        key,
+        data: defaultData[key],
+        updated_at: new Date().toISOString()
+      }));
+      supabaseClient
+        .from(SUPABASE_TABLE)
+        .upsert(resetRows, { onConflict: "key" })
+        .then(({ error }) => {
+          if (error) console.error("Reset sync error:", error);
+        });
+    }
+
+    renderAll();
+    showToast("Data portal berhasil di-reset!", "success");
+  });
+}
+
+function filterDocTable(q) {
+  q = q.toLowerCase();
+  document.querySelectorAll('#docTableBody tr').forEach(r => {
+    r.style.display = r.innerText.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+
+function globalSearch(q) {
+  if(q.trim()) {
+    showPage('tickets');
+    document.getElementById('ticketSearchInput').value = q;
+    searchTicket();
+  }
+}
+
+function renderAll() {
+  renderKPI();
+  renderStatus();
+  renderTickets();
+  renderNews();
+  renderDocs();
+  renderFAQ();
+  renderQuick();
+  renderUnits();
+  updateAdminUI();
+}
+
+window.onload = async function() {
+  renderAll();
+  showPage('home');
+  await initializeSupabase();
+};
+</script>
+
+<div id="databaseStatus" style="position:fixed;right:14px;bottom:14px;z-index:9999;padding:8px 12px;border-radius:999px;background:#fff;border:1px solid #ddd;box-shadow:0 4px 14px rgba(0,0,0,.08);font:12px Arial;color:#666;">
+  ● Menghubungkan database...
+</div>
+<script>
+(function(){
+  const originalInit = initializeSupabase;
+  initializeSupabase = async function(){
+    const el = document.getElementById('databaseStatus');
+    try {
+      await originalInit();
+      if (el) {
+        el.textContent = remoteReady ? '● Database online' : '● Mode lokal';
+        el.style.color = remoteReady ? '#16803a' : '#996c00';
+      }
+    } catch(e) {
+      if (el) { el.textContent = '● Database gagal terhubung'; el.style.color = '#b42318'; }
+      console.error(e);
+    }
+  };
+})();
+</script>
+
+</body>
+</html>
